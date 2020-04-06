@@ -1,6 +1,7 @@
 #include "state.hpp"
 #include "move.hpp"
 #include "player.hpp"
+#include "game.hpp"
 #include <string>
 
 #include <iostream>
@@ -9,9 +10,25 @@ using namespace std;
 
 int main() {
 
-    int k[4] = { 9, 14, 3, 8 };
+    
 
-    State s(4, k);
+    Game m(3, 4);
+    m.addHeap(10);
+    m.addHeap(20);
+    m.addHeap(17);
+
+    m.addPlayer(new SneakyPlayer("Tom"));
+    m.addPlayer(new SpartanPlayer("Mary"));
+    m.addPlayer(new GreedyPlayer("Alan"));
+    m.addPlayer(new RighteousPlayer("Robin"));
+
+    m.play(cout);
+
+
+    cout << endl << endl;
+    m.play(cout);
+
+
     // cout << s << endl;
     
     // Move m1(2,4,0,3);
@@ -59,19 +76,7 @@ int main() {
     // x = x / 2;
     // cout << x << endl;
     
-    Righteous r("Foivos");
     
-    Move m(0,0,0,0);
-
-    while(!s.winning()) {
-        
-        m = r.play(s);
-        cout << m << endl;
-        
-        s.next(m);
-        cout << s << endl;
-
-    }
 
     
 

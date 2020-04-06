@@ -10,42 +10,75 @@ class Game
 {
 private:
     int *cns;
-    int top, hps, plrs;
-    vector<Player> pl;
+    int top_coins, top_players, game_heaps, game_players, current_array_size;
+    Player** pl;
 public:
     // Constructor
     Game(int heaps, int players) {
-        hps = heaps;
-        plrs = players;
+        // Coins
+        game_heaps = heaps;
         cns = new int[heaps];
-        top = 0;
+        top_coins = 0;
+        top_players = 0;
+
+        // Players
+        game_players = players;
+        current_array_size = 0;
+        pl = new Player*[players];
     }
 
     // Destructor 
     ~Game() {
         delete[] cns;
-        p = hps = plrs = 0;
-        pl.clear();
+        top_coins = game_heaps = game_players = 0;
     }
 
     // Addition of a heap
-    void addHeap(int coins) throw(logic_error) 
+    void addHeap(int coins) throw() 
     {    
-        if( top > hps) throw logic_error("You cannot add another heap");
+        if( top_coins > game_heaps) throw logic_error("You cannot add another heap");
         else {
-            cns[top] = coins;
-            top++;
-            
+            cns[top_coins] = coins;
+            top_coins++;       
         }
     }
 
     // Addition of a player
-    void addPlayer(Player *player) throw(logic_error) {
-        if(pl.size() <= plrs){
-            pl.push_back(*player);
+    void addPlayer(Player *player) throw() {
+        if(current_array_size <= game_players){
+            pl[top_players] = player;
+            top_players++;
+            current_array_size++;
+
+            
         }
         else throw logic_error("You cannot add another player");
     }
     
-    void play(ostream &out) throw(logic_error);
+    // Procedure of the game 
+    void play(ostream &out) throw() {
+        
+        // Declaration of the initial state and move of the game
+        State s(game_heaps, cns);
+        Move m(0, 0, 0, 0);
+
+        int sum = 0;
+        while (!s.winning()) {
+            // Current State
+            out << "State: " << s << endl;
+            
+            // Next move of the player
+            m = pl[sum]->play(s);
+            s.next(m);
+            
+            out << *pl[sum] << " " << m << endl;
+            
+            if ( sum < (game_players - 1) && !s.winning()) sum++;
+            else if(sum == (game_players-1) && !s.winning()) sum = 0;
+       }
+
+       out << "State: " << s << endl;
+
+       out << *pl[sum] << " wins" << endl;
+    }
 };

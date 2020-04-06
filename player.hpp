@@ -11,12 +11,10 @@ using namespace std;
 class Player
 {
 protected:
-    string name;
+    const string name;
 public:
     Player(const string &n) : name(n){}
-    virtual ~Player(){
-        name = "";
-    }
+    virtual ~Player() {};
 
     virtual const string & getType() const = 0;
     virtual Move play(const State &s) = 0;
@@ -29,9 +27,10 @@ public:
 
 class GreedyPlayer : public Player {
 private:
-     string type = "Greedy";
+     const string type = "Greedy";
 public:
     GreedyPlayer(const string &n) : Player(n) {}
+    ~GreedyPlayer() {};
     
     const string & getType() const {return type;}
 
@@ -54,9 +53,10 @@ public:
 
 class SpartanPlayer : public Player {
 private:
-    string type = "Spartan";
+    const string type = "Spartan";
 public:
     SpartanPlayer(const string &n) : Player(n) {}
+    ~SpartanPlayer() {};
 
     const string & getType() const {return type;}
 
@@ -78,9 +78,10 @@ public:
 
 class SneakyPlayer : public Player {
 private:
-     string type = "Sneaky";
+    const string type = "Sneaky";
 public:
     SneakyPlayer(const string &n) : Player(n) {}
+    ~SneakyPlayer() {};
 
     const string & getType() const {return type;}
 
@@ -102,9 +103,10 @@ public:
 
 class RighteousPlayer : public Player {
 private:
-     string type = "Righteous";
+    const string type = "Righteous";
 public:
     RighteousPlayer(const string &n) : Player(n) {}
+    ~RighteousPlayer() {};
  
     const string & getType() const {return type;}
 
@@ -124,7 +126,13 @@ public:
                 heap_min = i+1;
             }
         }
-        Move m(heap_max, ((max/2) != 0) ? (max/2) : 1, heap_min, ((max/2) != 0) ? ((max/2)-1) : 0);
+        int rght_move_max;
+        if( max % 2 == 0) rght_move_max = max / 2;
+        else if ( max % 2 != 0) rght_move_max = max / 2 + 1;
+        else rght_move_max = 1;
+
+
+        Move m(heap_max, rght_move_max, heap_min, rght_move_max-1);
         return m; 
     }
 };
